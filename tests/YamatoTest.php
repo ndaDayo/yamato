@@ -10,7 +10,6 @@ use Mockery;
 use NdaDayo\Yamato\Exception\ClientException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 use function file_get_contents;
 
@@ -40,11 +39,9 @@ class YamatoTest extends TestCase
                 $this->assertEquals('POST', $method);
                 $this->assertEquals($expectedEndPoint, $endpoint);
 
-                $this->assertSame($expectedRequestOptions['headers']['Content-Type'], $requestOptions['headers']['Content-Type']);
                 $this->assertEquals($expectedRequestOptions['headers']['Content-Length'], $requestOptions['headers']['Content-Length']);
-                $this->assertEquals($expectedRequestOptions['form_params']['userId'], $requestOptions['form_params']['userId']);
-                $this->assertEquals($expectedRequestOptions['form_params']['password'], $requestOptions['form_params']['password']);
-                $this->assertInstanceOf(StreamInterface::class, $expectedRequestOptions['form_params']['multipart'][0]['contents']);
+                $this->assertEquals($expectedRequestOptions['multipart'][5]['name'], $requestOptions['multipart'][5]['name']);
+                $this->assertEquals($expectedRequestOptions['multipart'][6]['name'], $requestOptions['multipart'][6]['name']);
 
                 return $response;
             });
@@ -81,7 +78,7 @@ class YamatoTest extends TestCase
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     private function expectedRequestOptions(): array
     {
@@ -89,21 +86,40 @@ class YamatoTest extends TestCase
 
         return [
             'headers' => [
-                'Content-Type' => 'multipart/form-data',
                 'Content-Length' => $file->getSize(),
             ],
-            'form_params' => [
-                'uji.verbs' => 'fileUpload',
-                'uji.id' => 'body',
-                'uji.bean' => 'yamato.file.upload.bean.FileUploadBean',
-                'uji.encoding' => 'Windows-31J',
-                'userId' => 'user_id',
-                'password' => 'password',
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => $file,
-                    ],
+            'multipart' => [
+                [
+                    'name' => 'uji.verbs',
+                    'contents' => 'fileUpload',
+                ],
+                [
+                    'name' => 'uji.id',
+                    'contents' => 'body',
+                ],
+                [
+                    'name' => 'uji.verbs',
+                    'contents' => 'fileUpload',
+                ],
+                [
+                    'name' => 'uji.bean',
+                    'contents' => 'yamato.file.upload.bean.FileUploadBean',
+                ],
+                [
+                    'name' => 'uji.encoding',
+                    'contents' => 'Windows-31J',
+                ],
+                [
+                    'name' => 'userId',
+                    'contents' => 'user_id',
+                ],
+                [
+                    'name' => 'password',
+                    'contents' => 'password',
+                ],
+                [
+                    'name' => 'file',
+                    'contents' => Psr7\Utils::tryFopen($this->filePath, 'r'),
                 ],
             ],
         ];

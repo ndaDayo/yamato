@@ -7,7 +7,6 @@ namespace NdaDayo\Yamato;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\RequestOptions;
-use Koriym\HttpConstants\MediaType;
 use Koriym\HttpConstants\Method;
 use Koriym\HttpConstants\RequestHeader;
 use NdaDayo\Yamato\Contracts\ResponseInterface;
@@ -55,7 +54,7 @@ class Yamato implements YamatoInterface
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<string, mixed>
      */
     private function requestOptions(string $filePath): array
     {
@@ -63,21 +62,40 @@ class Yamato implements YamatoInterface
 
         return [
             RequestOptions::HEADERS => [
-                RequestHeader::CONTENT_TYPE => MediaType::MULTIPART_FORM_DATA,
                 RequestHeader::CONTENT_LENGTH => $file->getSize(),
             ],
-            RequestOptions::FORM_PARAMS => [
-                'uji.verbs' => 'fileUpload',
-                'uji.id' => 'body',
-                'uji.bean' => 'yamato.file.upload.bean.FileUploadBean',
-                'uji.encoding' => 'Windows-31J',
-                'userId' => $this->userId,
-                'password' => $this->password,
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => $file,
-                    ],
+            RequestOptions::MULTIPART => [
+                [
+                    'name' => 'uji.verbs',
+                    'contents' => 'fileUpload',
+                ],
+                [
+                    'name' => 'uji.id',
+                    'contents' => 'body',
+                ],
+                [
+                    'name' => 'uji.verbs',
+                    'contents' => 'fileUpload',
+                ],
+                [
+                    'name' => 'uji.bean',
+                    'contents' => 'yamato.file.upload.bean.FileUploadBean',
+                ],
+                [
+                    'name' => 'uji.encoding',
+                    'contents' => 'Windows-31J',
+                ],
+                [
+                    'name' => 'userId',
+                    'contents' => $this->userId,
+                ],
+                [
+                    'name' => 'password',
+                    'contents' => $this->password,
+                ],
+                [
+                    'name' => 'file',
+                    'contents' => Psr7\Utils::tryFopen($filePath, 'r'),
                 ],
             ],
         ];
