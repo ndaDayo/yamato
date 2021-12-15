@@ -1,6 +1,6 @@
 # NdaDayo.Yamato
 
-[![Packagist](https://img.shields.io/badge/packagist-v1.0-blue.svg)](https://packagist.org/packages/ndaDayo/nextengine)
+[![Packagist](https://img.shields.io/badge/packagist-v1.0.2-blue.svg)](https://packagist.org/packages/ndaDayo/nextengine)
 [![CI](https://github.com/ndaDayo/yamato/actions/workflows/ci.yml/badge.svg)](https://github.com/ndaDayo/yamato/actions/workflows/ci.yml)
 
 ヤマト運輸宅急便追跡サービスに出荷予定データを送信するためのAPIです。
@@ -32,5 +32,5 @@ $yamato->sendShippingData($filePath);
 ## Test
 
 ```
-$ composer test
+$ composer tests
 ```
